@@ -36,7 +36,7 @@ public class Account implements DOMable
         }
         
         // check that we have a *.<some extension>
-        String[] domain = localAndDomain[1].split(".");
+        String[] domain = localAndDomain[1].split("\\.");
         if(domain.length == 0)
         {
             throw new InvalidEmailException(email);
