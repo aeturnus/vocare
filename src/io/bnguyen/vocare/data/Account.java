@@ -25,6 +25,11 @@ public class Account implements DOMable
                 
     }
     
+    public Account(Element ele, Database db)
+    {
+        fromElement(ele,db);
+    }
+    
     public static String validateEmail(String email) throws InvalidEmailException
     {
         String[] localAndDomain = email.split("@");
@@ -51,6 +56,12 @@ public class Account implements DOMable
         DOMmer.addChildElementValue(doc, base, "accountName", this.accountName);
         DOMmer.addChildElementValue(doc, base, "email", this.email);
         DOMmer.addChildElementValue(doc, base, "hashword", this.hashword);
+        Element usersNode = doc.createElement("Users");
+        for(User user : users)
+        {
+            DOMmer.addChildElementValue(doc, usersNode, "userId", Integer.toString(user.getId()));
+        }
+        base.appendChild(usersNode);
         return base;
     }
     
@@ -60,5 +71,12 @@ public class Account implements DOMable
         this.accountName = DOMmer.getElementTagValue(ele, "accountName");
         this.email = DOMmer.getElementTagValue(ele, "email");
         this.hashword = DOMmer.getElementTagValue(ele, "hashword");
+        this.users = new ArrayList<User>();
+        Element usersNode = (Element) DOMmer.getNodeByName(ele, "Users");
+        String[] userIds = DOMmer.getElementTagValues(usersNode, "userId");
+        for( String userId : userIds )
+        {
+            users.add(db.getUser(Integer.parseInt(userId)));
+        }
     }
 }

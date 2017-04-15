@@ -31,6 +31,10 @@ public class Message implements Comparable<Message>, DOMable
         this.message = message;
         this.time = time;
     }
+    public Message(Element ele, Database db)
+    {
+        fromElement(ele,db);
+    }
     
     public int compareTo(Message other)
     {

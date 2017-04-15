@@ -26,6 +26,11 @@ public class User implements DOMable
         setEmail(email);
     }
     
+    public User(Element ele, Database db)
+    {
+        fromElement(ele,db);
+    }
+    
     @Override
     public int hashCode()
     {

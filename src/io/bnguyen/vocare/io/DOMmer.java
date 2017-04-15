@@ -1,7 +1,10 @@
 package io.bnguyen.vocare.io;
 
+import java.util.Collection;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class DOMmer
@@ -32,6 +35,29 @@ public class DOMmer
         Element parent = doc.createElement(tagName);
         parent.setAttribute(attrName, attrValue);
         return parent;
+    }
+    
+    public static Element generateParentContainer(Document doc, String tagName, Collection<? extends DOMable> doms)
+    {
+        Element parent = doc.createElement(tagName);
+        for( DOMable dom : doms)
+        {
+            parent.appendChild(dom.generateElement(doc));
+        }
+        return parent;
+    }
+    
+    public static Node getNodeByName(Element ele, String name)
+    {
+        NodeList nl = ele.getChildNodes();
+        for(int i = 0, length = nl.getLength(); i < length; i++)
+        {
+            if(nl.item(i).getNodeName().equals(name))
+            {
+                return nl.item(i);
+            }
+        }
+        return null;
     }
 
 }
