@@ -27,7 +27,7 @@ public class Chat implements DOMable
         fromElement(ele,db);
     }
     
-    private initDataStructures()
+    private void initDataStructures()
     {
         users = new HashSet<User>();
         messages = new ArrayList<Message>();
