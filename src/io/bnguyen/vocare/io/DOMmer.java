@@ -11,7 +11,10 @@ public class DOMmer
 {
     public static String getElementTagValue(Element ele, String tagName)
     {
-        return ele.getElementsByTagName(tagName).item(0).getNodeValue();
+        //return ele.getElementsByTagName(tagName).item(0).getNodeValue();
+        NodeList nl = ele.getElementsByTagName(tagName);
+        Node n = nl.item(0);
+        return n.getTextContent();
     }
     public static String[] getElementTagValues(Element ele, String tagName)
     {
@@ -20,14 +23,14 @@ public class DOMmer
         String[] values = new String[length];
         for(int i = 0; i < length; i++)
         {
-            values[i] = nodes.item(i).getNodeValue();
+            values[i] = nodes.item(i).getTextContent();
         }
         return values;
     }
     public static void addChildElementValue(Document doc, Element parent, String tagName, String value)
     {
         Element child = doc.createElement(tagName);
-        child.setNodeValue(value);
+        child.setTextContent(value);
         parent.appendChild(child);   
     }
     public static Element generateParentWithValue(Document doc, String tagName, String attrName, String attrValue)
