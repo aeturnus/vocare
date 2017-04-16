@@ -67,6 +67,7 @@ public class ChatClient implements Runnable
         write(accountName);
         write(email);
         write(password);
+        String ack = read(); // acknowledge
         // wait for response
         boolean badEmail = false;
         boolean badAccountName = false;
@@ -116,6 +117,7 @@ public class ChatClient implements Runnable
         write(VocareAPI.LOGIN_ACCOUNT);
         write(accountName);
         write(password);
+        String ack = read(); // acknowledge
         String response = read();
         if(response.equals(VocareAPI.FAIL))
         {
@@ -138,6 +140,7 @@ public class ChatClient implements Runnable
         write(lastName);
         write(phone);
         write(email);
+        String ack = read(); // acknowledge
         boolean badUserName= false;
         String response;
         do
@@ -152,6 +155,23 @@ public class ChatClient implements Runnable
         } while (!response.equals(VocareAPI.END));
         if(badUserName)
             throw new InvalidNameException(userName);
+    }
+    
+    public int createChat(String[] userNames)
+        throws IOException
+    {
+        if(!loggedIn)
+            return -1;
+        write(VocareAPI.CREATE_CHAT);
+        for(String userName : userNames)
+        {
+            write(userName);
+        }
+        write(VocareAPI.DONE);
+        String ack = read(); // acknowledge
+        String chatId = read();
+        waitForEnd();
+        return Integer.parseInt(chatId);
     }
     
     public static void main(String[] args)

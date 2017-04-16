@@ -50,6 +50,12 @@ public class VocareAPI
      * Return: SUCCESS or FAIL
      */
     public static final String SET_USER = "API_SET_USER";
+   
+    /* CREATE CHAT
+     * Params: username1, username2, .... done, end
+     * Return: chat-id
+     */
+    public static final String CREATE_CHAT = "API_CREATE_CHAT";
     
     /* GET CHATS
      * Params: <none>

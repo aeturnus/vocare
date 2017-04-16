@@ -108,15 +108,18 @@ public class Database implements DOMable
         chat.addUser(user);
         chat.setPaired(false);
         ++chatIdPool;
+        chats.add(chat);
         return chat;
     }
     
-    public Chat createChat(User user1, User user2)
+    public Chat createChat(User[] userArray)
     {
         Chat chat = new Chat(chatIdPool);
-        chat.addUser(user1);
-        chat.addUser(user2);
-        chat.setPaired(true);
+        chat.setPaired(userArray.length == 2);
+        for(User user : userArray)
+        {
+            chat.addUser(user);
+        }
         ++chatIdPool;
         return chat;
     }

@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import io.bnguyen.vocare.client.ChatClient;
 import io.bnguyen.vocare.data.Account;
+import io.bnguyen.vocare.data.Chat;
 import io.bnguyen.vocare.data.InvalidNameException;
 import io.bnguyen.vocare.data.User;
 import io.bnguyen.vocare.server.ChatServer;
@@ -106,6 +107,32 @@ public class IntegrationTest
                 return;
             }
             Assert.fail("Should have been caught in exception");
+        }
+        catch(Exception e)
+        {
+            Assert.fail("Exception occurred");
+        }
+    }
+    
+    @Test
+    public void testCreateChat()
+    {
+        try
+        {
+            server.run();
+            Account john = server.getDB().createAccount("johnnyboy", "john@email.com", "hunter2");
+            Account sally = server.getDB().createAccount("sallygirl", "sally@email.com", "hunter2");
+            server.getDB().createUser(john, "john", "John", "Johnson", "1234567890", "john@email.com");
+            server.getDB().createUser(sally, "sally", "Sally", "Stevenson", "0987654321", "sally@email.com");
+            Thread.sleep(50);
+            client.connect();
+            client.login("johnnyboy", "hunter2");
+            String[] userNames = {"john", "sally"};
+            int id = client.createChat(userNames);
+            Assert.assertNotEquals("Should successfully create first chat", -1, id);
+            
+            Chat chat = server.getDB().getChats().findById(id);
+            Assert.assertNotEquals("Chat should exist in DB", null, chat);
         }
         catch(Exception e)
         {

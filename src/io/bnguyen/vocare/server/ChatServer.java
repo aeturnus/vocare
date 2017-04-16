@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import io.bnguyen.vocare.VocareAPI;
 import io.bnguyen.vocare.data.Account;
+import io.bnguyen.vocare.data.Chat;
 import io.bnguyen.vocare.data.InvalidEmailException;
 import io.bnguyen.vocare.data.InvalidNameException;
 import io.bnguyen.vocare.data.Password;
@@ -226,8 +227,28 @@ public class ChatServer implements Runnable
             case VocareAPI.CREATE_USER:
                 handleCreateUser();
                 break;
+            case VocareAPI.CREATE_CHAT:
+                handleCreateChat();
+                break;
             }
             write(VocareAPI.END);
+        }
+        
+        private void handleCreateChat() throws IOException
+        {
+            ArrayList<User> chatUsers = new ArrayList<User>();
+            String input;
+            do
+            {
+                input = read();
+                User user = db.getUsers().findByUserName(input);
+                chatUsers.add(user);
+            } while (!input.equals(VocareAPI.DONE));
+            
+            User[] userArray = new User[chatUsers.size()];
+            userArray = chatUsers.toArray(userArray);
+            Chat chat = db.createChat(userArray);
+            write(Integer.toString(chat.getId()));
         }
         
         private void handleCreateUser() throws IOException
