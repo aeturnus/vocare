@@ -143,6 +143,7 @@ public class Database implements DOMable
     {
         accountsById            = new HashMap<Integer,Account>();
         accountsByAccountName   = new HashMap<String,Account>();
+        accountsByEmail         = new HashMap<String,Account>();
         users    = new HashMap<Integer,User>();
         chats    = new HashMap<Integer,Chat>();
         messages = new HashMap<Integer,Message>();
