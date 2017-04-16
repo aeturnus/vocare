@@ -54,6 +54,14 @@ public class ChatServer implements Runnable
     public void shutdown()
     {
         listener.shutdown();
+        try
+        {
+            serverSocket.close();
+        }
+        catch(IOException ioe)
+        {
+            ioe.printStackTrace();
+        }
     }
     
     public static void main(String[] args)
@@ -93,6 +101,12 @@ public class ChatServer implements Runnable
                         thread.start();
                     }
                 }
+                /*
+                for(Thread t : clientHandlersThreads)
+                {
+                    t.interrupt();
+                }
+                */
             }
             catch(IOException ioe)
             {

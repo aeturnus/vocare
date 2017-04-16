@@ -28,6 +28,57 @@ public class IntegrationTest
     }
 
     @Test
+    public void testCreateAccount()
+    {
+        try
+        {
+            server.run();
+            Thread.sleep(100);
+            client.connect();
+            try
+            {
+                client.createAccount("johnnyboy", "john@email.com", "hunter2");
+            }catch(Exception e)
+            {
+                Assert.fail("Failed to create an account: ");
+            }
+            Thread.sleep(100);
+            Account acc = server.getDB().getAccounts().findByAccountName("johnnyboy");
+            
+            Assert.assertNotEquals("Account was not created serverside",null, acc);
+        }
+        catch(Exception e)
+        {
+            Assert.fail("Exception occurred");
+        }
+    }
+    
+    @Test
+    public void testLoginLogout()
+    {
+        try
+        {
+            server.run();
+            server.getDB().createAccount("johnnyboy", "john@email.com", "hunter2");
+            Thread.sleep(100);
+            client.connect();
+            
+            Thread.sleep(100);
+            
+            ChatServer.ClientHandler handler = server.getListener().getHandlers()[0];
+            client.login("johnnyboy", "hunter2");
+            Assert.assertTrue("Account should be authenticated after login", handler.isAuthenticated());
+            client.logout();
+            Assert.assertFalse("Account should be unauthenticated after logout", handler.isAuthenticated());
+            
+        }
+        catch(Exception e)
+        {
+            Assert.fail("Exception occurred");
+        }
+    }
+    
+    @Test
     public void testBasic()
     {
         try
