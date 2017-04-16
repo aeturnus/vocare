@@ -1,4 +1,4 @@
-package io.bnguyen.vocare;
+package io.bnguyen.vocare.server;
 
 import java.io.File;
 import java.util.HashMap;

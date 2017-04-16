@@ -5,9 +5,9 @@ import java.util.Date;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import io.bnguyen.vocare.Database;
 import io.bnguyen.vocare.io.DOMable;
 import io.bnguyen.vocare.io.DOMmer;
+import io.bnguyen.vocare.server.Database;
 
 public class Message implements Comparable<Message>, DOMable
 {
