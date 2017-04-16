@@ -25,7 +25,8 @@ public class Account implements DOMable
     public static final String USERS_TAG = "users";
     public static final String USERID_TAG = "userId";
    
-    public Account( int id, String accountName, String email, String password ) throws InvalidDataException
+    public Account( int id, String accountName, String email, String password )
+            throws InvalidEmailException
     {
         this.id = id;
         this.accountName = accountName;

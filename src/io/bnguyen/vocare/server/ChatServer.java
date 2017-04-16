@@ -1,24 +1,30 @@
 package io.bnguyen.vocare.server;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import io.bnguyen.vocare.VocareAPI;
 import io.bnguyen.vocare.data.Account;
+import io.bnguyen.vocare.data.InvalidAccountNameException;
+import io.bnguyen.vocare.data.InvalidEmailException;
+import io.bnguyen.vocare.data.Password;
+import io.bnguyen.vocare.data.User;
 
 public class ChatServer
 {
     private ServerSocket serverSocket;
+    private Database db;
     public ChatServer()
     {
         try
         {
             serverSocket = new ServerSocket(8000);
+            db = new Database();
         }
         catch (IOException ioe)
         {
@@ -104,28 +110,37 @@ public class ChatServer
     
     private class ClientHandler implements Runnable
     {
+        
         private Socket socket;
-        //private BufferedReader fromClient;
-        private DataInputStream fromClient;
-        private BufferedReader  fromClientB;
-        private DataOutputStream toClient;
+        private BufferedReader  fromClient;
+        private PrintWriter toClient;
         private ServerSocketListener listener;
+        
         private Account account;
+        private User user;
         public ClientHandler(Socket socket, ServerSocketListener listener)
         {
             this.socket = socket;
             this.listener = listener;
             try
             {
-                //this.fromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                this.fromClient = new DataInputStream(socket.getInputStream());
-                this.fromClientB = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                this.toClient = new DataOutputStream(socket.getOutputStream());
+                this.fromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                this.toClient = new PrintWriter(socket.getOutputStream(),true);
             }
             catch(IOException ioe)
             {
                 ioe.printStackTrace();
             }
+        }
+        
+        private String read() throws IOException
+        {
+            return fromClient.readLine();
+        }
+        
+        private void write(String content)
+        {
+            toClient.println(content);
         }
         
         public void run()
@@ -134,9 +149,8 @@ public class ChatServer
             {
                 try
                 {
-                    //String clientData = fromClient.readLine();
-                    String clientData = fromClientB.readLine();
-                    System.out.println(clientData);
+                    String request = read();
+                    handleRequest(request);
                 }
                 catch(IOException ioe)
                 {
@@ -144,6 +158,66 @@ public class ChatServer
                 }
             }
             listener.notifyClosed(this);
+        }
+        
+        private void handleRequest(String request) throws IOException
+        {
+            switch(request)
+            {
+            case VocareAPI.CREATE_ACCOUNT:
+                handleCreateAccount();
+                break;
+            case VocareAPI.LOGOUT_ACCOUNT:
+                account = null;
+                user = null;
+                break;
+            case VocareAPI.LOGIN_ACCOUNT:
+                handleLoginAccount();
+                break;
+            }
+            write(VocareAPI.END);
+        }
+        
+        private void handleLoginAccount() throws IOException
+        {
+            String accountName = read();
+            String password = read();
+            Account acc = db.getAccount(accountName, true);
+            if(acc == null)
+            {
+                write(VocareAPI.FAIL);
+            }
+            else
+            {
+                if( Password.checkPassword(password, acc.getHashword()) )
+                {
+                    account = acc;
+                    write(VocareAPI.SUCCESS);
+                }
+                else
+                {
+                    write(VocareAPI.FAIL);
+                }
+            }
+        }
+
+        private void handleCreateAccount() throws IOException
+        {
+            String accountName = read();
+            String email = read();
+            String password = read();
+            try
+            {
+                account = db.createAccount(accountName, email, password);
+            }
+            catch(InvalidEmailException iee)
+            {
+                write(VocareAPI.CREATE_ACCOUNT_INVALIDEMAIL);
+            }
+            catch(InvalidAccountNameException iane)
+            {
+                write(VocareAPI.CREATE_ACCOUNT_ACCOUNTNAME_TAKEN);
+            }
         }
     }
 }
