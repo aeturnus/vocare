@@ -33,11 +33,17 @@ public class Password
         return Base64.encode(key.getEncoded());
     }
     
-    public static boolean checkPassword(String input, String stored) throws Exception
+    public static boolean checkPassword(String input, String stored)
     {
         String[] saltAndPassword = stored.split("\\$");
-        // TODO: exception handling
-        String inputHash = getHash(input,Base64.decode(saltAndPassword[0]));
-        return inputHash.equals(saltAndPassword[1]);
+        try
+        {
+            String inputHash = getHash(input,Base64.decode(saltAndPassword[0]));
+            return inputHash.equals(saltAndPassword[1]);
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
     }
 }
