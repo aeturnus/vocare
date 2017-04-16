@@ -15,10 +15,11 @@ import io.bnguyen.vocare.data.InvalidEmailException;
 import io.bnguyen.vocare.data.Password;
 import io.bnguyen.vocare.data.User;
 
-public class ChatServer
+public class ChatServer implements Runnable
 {
     private ServerSocket serverSocket;
     private Database db;
+    private ServerSocketListener listener;
     public ChatServer()
     {
         try
@@ -31,9 +32,9 @@ public class ChatServer
         }
     }
     
-    public void execute()
+    public void run()
     {
-        ServerSocketListener listener = new ServerSocketListener();
+        listener = new ServerSocketListener();
         Thread listenerThread = new Thread(listener);
         listenerThread.start();
         while(listener.isRunning())
@@ -41,10 +42,15 @@ public class ChatServer
         }
     }
     
+    public void shutdown()
+    {
+        listener.shutdown();
+    }
+    
     public static void main(String[] args)
     {
         ChatServer server = new ChatServer();
-        server.execute();
+        server.run();
     }
     
     private class ServerSocketListener implements Runnable
