@@ -16,6 +16,11 @@ public class Message implements Comparable<Message>, DOMable
     private String message; // payload
     private long time;      // time since epoch
     
+    public static final String MESSAGE_TAG = "Message";
+    public static final String SENDERID_TAG = "senderId";
+    public static final String CONTENT_TAG = "content";
+    public static final String TIME_TAG = "time";
+    
     // generate a new message at this time
     public Message(int id, User sender, String message)
     {
@@ -44,19 +49,19 @@ public class Message implements Comparable<Message>, DOMable
     
     public Element generateElement(Document doc)
     {
-        Element base = DOMmer.generateParentWithValue(doc, "Message", "id", Integer.toString(id));
-        DOMmer.addChildElementValue(doc, base, "senderId", Integer.toString(sender.getId()));
-        DOMmer.addChildElementValue(doc, base, "message", message);
-        DOMmer.addChildElementValue(doc, base, "time", Long.toString(time));
+        Element base = DOMmer.generateParentWithValue(doc, MESSAGE_TAG, "id", Integer.toString(id));
+        DOMmer.addChildElementValue(doc, base, SENDERID_TAG, Integer.toString(sender.getId()));
+        DOMmer.addChildElementValue(doc, base, CONTENT_TAG, message);
+        DOMmer.addChildElementValue(doc, base, TIME_TAG, Long.toString(time));
         return base;
     }
     
     public void fromElement(Element ele, Database db)
     {
         id = Integer.parseInt(ele.getAttribute("id"));
-        sender = db.getUser(Integer.parseInt(DOMmer.getElementTagValue(ele, "senderId")));
-        message = DOMmer.getElementTagValue(ele, "message");
-        time = Long.parseLong(DOMmer.getElementTagValue(ele, "time"));
+        sender = db.getUser(Integer.parseInt(DOMmer.getElementTagValue(ele, SENDERID_TAG)));
+        message = DOMmer.getElementTagValue(ele, CONTENT_TAG);
+        time = Long.parseLong(DOMmer.getElementTagValue(ele, TIME_TAG));
     }
     
     // getters and setters

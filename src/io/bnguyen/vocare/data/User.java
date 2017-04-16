@@ -19,13 +19,14 @@ public class User implements DOMable
     private String email;
     private ArrayList<User> contacts;
     
+    private static final String USER_TAG = "User";
     private static final String USERNAME_TAG = "userName";
     private static final String FIRSTNAME_TAG = "firstName";
     private static final String LASTNAME_TAG = "lastName";
     private static final String PHONE_TAG = "phone";
     private static final String EMAIL_TAG = "email";
     private static final String CONTACTS_TAG = "Contacts";
-    private static final String USERID_TAG = "userId";
+    private static final String CONTACTID_TAG = "contactId";
     
     public User( int id, String username, String firstName, String lastName, String phone, String email )
     {
@@ -51,7 +52,7 @@ public class User implements DOMable
 
     public Element generateElement(Document doc)
     {
-        Element base = DOMmer.generateParentWithValue(doc, "User", "id", Integer.toString(id));
+        Element base = DOMmer.generateParentWithValue(doc, USER_TAG, "id", Integer.toString(id));
         DOMmer.addChildElementValue(doc, base, USERNAME_TAG, userName);
         DOMmer.addChildElementValue(doc, base, FIRSTNAME_TAG, firstName);
         DOMmer.addChildElementValue(doc, base, LASTNAME_TAG, lastName);
@@ -60,7 +61,7 @@ public class User implements DOMable
         Element contactsNode = doc.createElement(CONTACTS_TAG);
         for(User user: contacts)
         {
-            DOMmer.addChildElementValue(doc, contactsNode, USERID_TAG, Integer.toString(user.getId()));
+            DOMmer.addChildElementValue(doc, contactsNode, CONTACTID_TAG, Integer.toString(user.getId()));
         }
         return base;
     }
@@ -74,7 +75,7 @@ public class User implements DOMable
         phone = DOMmer.getElementTagValue(ele, PHONE_TAG);
         email = DOMmer.getElementTagValue(ele, EMAIL_TAG);
         Element usersNode = (Element) DOMmer.getNodeByName(ele, CONTACTS_TAG);
-        String[] userIds = DOMmer.getElementTagValues(usersNode, USERID_TAG);
+        String[] userIds = DOMmer.getElementTagValues(usersNode, CONTACTID_TAG);
         for( String userId : userIds )
         {
             contacts.add(db.getUser(Integer.parseInt(userId)));

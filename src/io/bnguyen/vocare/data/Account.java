@@ -17,7 +17,8 @@ public class Account implements DOMable
     private String email;
     private String hashword;
     List<User> users;
-        
+    
+    public static final String ACCOUNT_TAG = "Account";
     public static final String ACCOUNTNAME_TAG = "accountName";
     public static final String EMAIL_TAG = "email";
     public static final String HASHWORD_TAG = "hashword";
@@ -69,7 +70,7 @@ public class Account implements DOMable
     // DOMable
     public Element generateElement(Document doc)
     {
-        Element base = DOMmer.generateParentWithValue(doc, "Account", "id", Integer.toString(id));
+        Element base = DOMmer.generateParentWithValue(doc, ACCOUNT_TAG, "id", Integer.toString(id));
         DOMmer.addChildElementValue(doc, base, ACCOUNTNAME_TAG, this.accountName);
         DOMmer.addChildElementValue(doc, base, EMAIL_TAG, this.email);
         DOMmer.addChildElementValue(doc, base, HASHWORD_TAG, this.hashword);

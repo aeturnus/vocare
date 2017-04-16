@@ -17,6 +17,13 @@ public class Chat implements DOMable
     private int id;
     private Set<User> users;
     private List<Message> messages;
+    
+    public static final String CHAT_TAG = "Chat";
+    public static final String USERS_TAG = "Users";
+    public static final String USERID_TAG = "userId";
+    public static final String MESSAGES_TAG = "Messages";
+    public static final String MSGID_TAG = "msgId";
+    
     public Chat()
     {
         initDataStructures();
@@ -35,16 +42,16 @@ public class Chat implements DOMable
     
     public Element generateElement(Document doc)
     {
-        Element base = DOMmer.generateParentWithValue(doc, "User", "id", Integer.toString(id));
-        Element usersNode = doc.createElement("Users");
+        Element base = DOMmer.generateParentWithValue(doc, CHAT_TAG, "id", Integer.toString(id));
+        Element usersNode = doc.createElement(USERS_TAG);
         for(User user : users)
         {
-            DOMmer.addChildElementValue(doc, usersNode, "userId", Integer.toString(user.getId()));
+            DOMmer.addChildElementValue(doc, usersNode, USERID_TAG, Integer.toString(user.getId()));
         }
-        Element messagesNode = doc.createElement("Messages");
+        Element messagesNode = doc.createElement(MESSAGES_TAG);
         for(Message message : messages)
         {
-            DOMmer.addChildElementValue(doc, messagesNode, "msgId", Integer.toString(message.getId()));
+            DOMmer.addChildElementValue(doc, messagesNode, MSGID_TAG, Integer.toString(message.getId()));
         }
         base.appendChild(usersNode);
         base.appendChild(messagesNode);
@@ -57,15 +64,15 @@ public class Chat implements DOMable
         
         id = Integer.parseInt(ele.getAttribute("id"));
         
-        Element usersNode = (Element) DOMmer.getNodeByName(ele, "Users");
-        String[] userIds = DOMmer.getElementTagValues(usersNode, "userId");
+        Element usersNode = (Element) DOMmer.getNodeByName(ele, USERS_TAG);
+        String[] userIds = DOMmer.getElementTagValues(usersNode, USERID_TAG);
         for( String userId : userIds )
         {
             users.add(db.getUser(Integer.parseInt(userId)));
         }
         
-        Element messagesNode = (Element) DOMmer.getNodeByName(ele, "Messages");
-        String[] messageIds = DOMmer.getElementTagValues(messagesNode, "msgId");
+        Element messagesNode = (Element) DOMmer.getNodeByName(ele, MESSAGES_TAG);
+        String[] messageIds = DOMmer.getElementTagValues(messagesNode, MSGID_TAG);
         for( String messageId : messageIds )
         {
             messages.add(db.getMessage(Integer.parseInt(messageId)));
