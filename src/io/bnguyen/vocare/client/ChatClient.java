@@ -51,6 +51,11 @@ public class ChatClient implements Runnable
         }
     }
     
+    private void waitForEnd() throws IOException
+    {
+        while(!(read().equals(VocareAPI.END))){}
+    }
+    
     public void createAccount(String accountName, String email, String password)
             throws InvalidEmailException, InvalidAccountNameException, IOException
     {
@@ -79,6 +84,39 @@ public class ChatClient implements Runnable
             throw new InvalidEmailException(email);
         if(badAccountName)
             throw new InvalidAccountNameException(accountName);
+    }
+    
+    /**
+     * Logs out of current account
+     * @throws IOException
+     */
+    public void logout()
+        throws IOException
+    {
+        write(VocareAPI.LOGOUT_ACCOUNT);
+        waitForEnd();
+    }
+    
+    /**
+     * Logins for a given account
+     * @param accountName
+     * @param password
+     * @return true if success, false if unsuccessful
+     */
+    public boolean login(String accountName, String password)
+        throws IOException
+    {
+        boolean result = true;
+        write(VocareAPI.LOGIN_ACCOUNT);
+        write(accountName);
+        write(password);
+        String response = read();
+        if(response.equals(VocareAPI.FAIL))
+        {
+            result = false;
+        }
+        waitForEnd();
+        return result;
     }
     
     public static void main(String[] args)

@@ -39,6 +39,11 @@ public class ChatServer implements Runnable
         return db;
     }
     
+    public ServerSocketListener getListener()
+    {
+        return listener;
+    }
+    
     public void run()
     {
         listener = new ServerSocketListener();
@@ -57,10 +62,10 @@ public class ChatServer implements Runnable
         server.run();
     }
     
-    private class ServerSocketListener implements Runnable
+    public class ServerSocketListener implements Runnable
     {
-        ArrayList<ClientHandler> clientHandlers;
-        ArrayList<Thread> clientHandlersThreads;
+        private ArrayList<ClientHandler> clientHandlers;
+        private ArrayList<Thread> clientHandlersThreads;
         private boolean active;
         public ServerSocketListener()
         {
@@ -116,9 +121,15 @@ public class ChatServer implements Runnable
         {
             active = false;
         }
+        
+        public ClientHandler[] getHandlers()
+        {
+            ClientHandler[] handlers = new ClientHandler[clientHandlers.size()];
+            return clientHandlers.toArray(handlers);
+        }
     }
     
-    private class ClientHandler implements Runnable
+    public class ClientHandler implements Runnable
     {
         
         private Socket socket;
@@ -141,6 +152,11 @@ public class ChatServer implements Runnable
             {
                 ioe.printStackTrace();
             }
+        }
+        
+        public boolean isAuthenticated()
+        {
+            return (account != null);
         }
         
         private String read() throws IOException

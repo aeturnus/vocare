@@ -48,6 +48,15 @@ public class IntegrationTest
             Assert.assertNotEquals("Account was not created serverside",null, acc);
             Assert.assertEquals("johnnyboy", acc.getAccountName());
             Assert.assertEquals("john@email.com", acc.getEmail());
+            
+            
+            ChatServer.ClientHandler handler = server.getListener().getHandlers()[0];
+            Assert.assertTrue("Account should be authenticated after account creation", handler.isAuthenticated());
+            client.logout();
+            Assert.assertFalse("Account should be unauthenticated after logout", handler.isAuthenticated());
+            client.login("johnnyboy", "hunter2");
+            Assert.assertTrue("Account should be authenticated after login", handler.isAuthenticated());
+            
         }
         catch(Exception e)
         {
