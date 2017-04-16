@@ -7,8 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import io.bnguyen.vocare.VocareAPI;
-import io.bnguyen.vocare.data.InvalidAccountNameException;
 import io.bnguyen.vocare.data.InvalidEmailException;
+import io.bnguyen.vocare.data.InvalidNameException;
 
 public class ChatClient implements Runnable
 {
@@ -57,7 +57,7 @@ public class ChatClient implements Runnable
     }
     
     public void createAccount(String accountName, String email, String password)
-            throws InvalidEmailException, InvalidAccountNameException, IOException
+            throws InvalidEmailException, InvalidNameException, IOException
     {
         write(VocareAPI.CREATE_ACCOUNT);
         write(accountName);
@@ -83,7 +83,7 @@ public class ChatClient implements Runnable
         if(badEmail)
             throw new InvalidEmailException(email);
         if(badAccountName)
-            throw new InvalidAccountNameException(accountName);
+            throw new InvalidNameException(accountName);
     }
     
     /**
@@ -117,6 +117,32 @@ public class ChatClient implements Runnable
         }
         waitForEnd();
         return result;
+    }
+    
+    public void createUser(String userName, String firstName, String lastName,
+                           String phone, String email)
+        throws IOException, InvalidNameException
+    {
+        write(VocareAPI.CREATE_USER);
+        write(userName);
+        write(firstName);
+        write(lastName);
+        write(phone);
+        write(email);
+        boolean badUserName= false;
+        String response;
+        do
+        {
+            response = read();
+            switch(response)
+            {
+            case VocareAPI.CREATE_ACCOUNT_ACCOUNTNAME_TAKEN:
+                badUserName= true;
+                break;
+            }
+        } while (!response.equals(VocareAPI.END));
+        if(badUserName)
+            throw new InvalidNameException(userName);
     }
     
     public static void main(String[] args)

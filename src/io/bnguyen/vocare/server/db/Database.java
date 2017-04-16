@@ -9,8 +9,8 @@ import org.w3c.dom.NodeList;
 
 import io.bnguyen.vocare.data.Account;
 import io.bnguyen.vocare.data.Chat;
-import io.bnguyen.vocare.data.InvalidAccountNameException;
 import io.bnguyen.vocare.data.InvalidEmailException;
+import io.bnguyen.vocare.data.InvalidNameException;
 import io.bnguyen.vocare.data.Message;
 import io.bnguyen.vocare.data.User;
 import io.bnguyen.vocare.io.DOMable;
@@ -65,17 +65,41 @@ public class Database implements DOMable
         return messages;
     }
     
+    public boolean accountNameTaken(String accountName)
+    {
+        Account exist = accounts.findByAccountName(accountName);
+        return (exist != null);
+    }
+    
+    public boolean userNameTaken(String userName)
+    {
+        User exist = users.findByUserName(userName);
+        return (exist != null);
+    }
+    
     public Account createAccount(String accountName, String email, String password)
-        throws InvalidAccountNameException, InvalidEmailException
+        throws InvalidNameException, InvalidEmailException
     {
         Account exist = accounts.findByAccountName(accountName);
         if(exist != null)
-            throw new InvalidAccountNameException(accountName);
+            throw new InvalidNameException(accountName);
         
         Account acc = new Account(accountIdPool, accountName, email, password);
         accounts.add(acc);
         ++accountIdPool;
         return acc;
+    }
+    
+    public User createUser(Account account, String userName, String firstName, String lastName, String phone, String email)
+        throws InvalidNameException
+    {
+        if(userNameTaken(userName))
+            throw new InvalidNameException(userName);
+        
+        User user = new User(userIdPool, userName, firstName, lastName, phone, email);
+        users.add(user);
+        account.addUser(user);
+        return user;
     }
     
     public Chat createChat(User user)

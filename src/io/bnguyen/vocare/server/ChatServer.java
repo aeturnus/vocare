@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 import io.bnguyen.vocare.VocareAPI;
 import io.bnguyen.vocare.data.Account;
-import io.bnguyen.vocare.data.InvalidAccountNameException;
 import io.bnguyen.vocare.data.InvalidEmailException;
+import io.bnguyen.vocare.data.InvalidNameException;
 import io.bnguyen.vocare.data.Password;
 import io.bnguyen.vocare.data.User;
 import io.bnguyen.vocare.server.db.Database;
@@ -214,8 +214,32 @@ public class ChatServer implements Runnable
             case VocareAPI.LOGIN_ACCOUNT:
                 handleLoginAccount();
                 break;
+            case VocareAPI.CREATE_USER:
+                handleCreateUser();
+                break;
             }
             write(VocareAPI.END);
+        }
+        
+        private void handleCreateUser() throws IOException
+        {
+            String userName = read();
+            String firstName = read();
+            String lastName = read();
+            String phone = read();
+            String email = read();
+            try
+            {
+                User newUser = db.createUser(account, userName, firstName, lastName, phone, email);
+                if(account.getUsers().length == 1)
+                {
+                    user = newUser;
+                }
+            }
+            catch(InvalidNameException ine)
+            {
+                write(VocareAPI.CREATE_USER_USERNAME_TAKEN);
+            }
         }
         
         private void handleLoginAccount() throws IOException
@@ -232,6 +256,11 @@ public class ChatServer implements Runnable
                 if( Password.checkPassword(password, acc.getHashword()) )
                 {
                     account = acc;
+                    // if only one user, auto select
+                    if(acc.getUsers().length == 1)
+                    {
+                        user = acc.getUsers()[0];
+                    }
                     write(VocareAPI.SUCCESS);
                 }
                 else
@@ -254,7 +283,7 @@ public class ChatServer implements Runnable
             {
                 write(VocareAPI.CREATE_ACCOUNT_INVALIDEMAIL);
             }
-            catch(InvalidAccountNameException iane)
+            catch(InvalidNameException iane)
             {
                 write(VocareAPI.CREATE_ACCOUNT_ACCOUNTNAME_TAKEN);
             }

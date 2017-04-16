@@ -1,9 +1,9 @@
 package io.bnguyen.vocare.data;
 
-public class InvalidAccountNameException extends InvalidDataException
+public class InvalidNameException extends InvalidDataException
 {
     String accountName;
-    public InvalidAccountNameException(String accountName)
+    public InvalidNameException(String accountName)
     {
         this.accountName = accountName;
         this.message = "Invalid account name: " + accountName;

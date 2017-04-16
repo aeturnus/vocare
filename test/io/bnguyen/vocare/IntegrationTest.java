@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import io.bnguyen.vocare.client.ChatClient;
 import io.bnguyen.vocare.data.Account;
+import io.bnguyen.vocare.data.InvalidNameException;
+import io.bnguyen.vocare.data.User;
 import io.bnguyen.vocare.server.ChatServer;
 
 public class IntegrationTest
@@ -33,7 +35,7 @@ public class IntegrationTest
         try
         {
             server.run();
-            Thread.sleep(100);
+            Thread.sleep(50);
             client.connect();
             try
             {
@@ -42,7 +44,7 @@ public class IntegrationTest
             {
                 Assert.fail("Failed to create an account: ");
             }
-            Thread.sleep(100);
+            Thread.sleep(50);
             Account acc = server.getDB().getAccounts().findByAccountName("johnnyboy");
             
             Assert.assertNotEquals("Account was not created serverside",null, acc);
@@ -60,10 +62,10 @@ public class IntegrationTest
         {
             server.run();
             server.getDB().createAccount("johnnyboy", "john@email.com", "hunter2");
-            Thread.sleep(100);
+            Thread.sleep(50);
             client.connect();
             
-            Thread.sleep(100);
+            Thread.sleep(50);
             
             ChatServer.ClientHandler handler = server.getListener().getHandlers()[0];
             client.login("johnnyboy", "hunter2");
@@ -79,12 +81,44 @@ public class IntegrationTest
     }
     
     @Test
+    public void testCreateUser()
+    {
+        try
+        {
+            server.run();
+            server.getDB().createAccount("johnnyboy", "john@email.com", "hunter2");
+            Thread.sleep(50);
+            client.connect();
+            Thread.sleep(50);
+            client.createUser("john", "John", "Johnson", "1234567890", "john@email.com");
+            User newUser = server.getDB().getUsers().findByUserName("john");
+            Account acc = server.getDB().getAccounts().findByAccountName("johnnyboy");
+            
+            Assert.assertNotEquals("New user should be created", null, newUser);
+            Assert.assertEquals("New user should be in account", newUser, acc.getUsers()[0]);
+            try
+            {
+                client.createUser("john", "John", "Johnson", "1234567890", "john@email.com");
+            }
+            catch(InvalidNameException ine)
+            {
+                return;
+            }
+            Assert.fail("Should have been caught in exception");
+        }
+        catch(Exception e)
+        {
+            Assert.fail("Exception occurred");
+        }
+    }
+    
+    @Test
     public void testBasic()
     {
         try
         {
             server.run();
-            Thread.sleep(100);
+            Thread.sleep(50);
             client.connect();
             try
             {
@@ -93,7 +127,7 @@ public class IntegrationTest
             {
                 Assert.fail("Failed to create an account: ");
             }
-            Thread.sleep(100);
+            Thread.sleep(50);
             Account acc = server.getDB().getAccounts().findByAccountName("johnnyboy");
             
             Assert.assertNotEquals("Account was not created serverside",null, acc);

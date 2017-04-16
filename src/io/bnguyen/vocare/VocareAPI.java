@@ -9,6 +9,12 @@ public class VocareAPI
     // transaction complete
     public static final String END = "API_END";
     
+    // needs authentication
+    public static final String NEED_AUTH = "API_NEED_AUTH";
+    
+    // acknowledge
+    public static final String ACK = "API_ACK";
+    
     /* LOGIN ACCOUNT
      * Params: account name, password
      * Return: success or fail, end
@@ -37,6 +43,7 @@ public class VocareAPI
      * Return: failed items if failed, success or fail, end
      */
     public static final String CREATE_USER = "API_CREATE_USER";
+    public static final String CREATE_USER_USERNAME_TAKEN = "API_CREATE_USER_USERNAME_TAKEN";
     
     /* SET USER
      * Params: username
