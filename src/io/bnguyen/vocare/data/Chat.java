@@ -18,9 +18,11 @@ public class Chat implements DOMable
     private String chatName;
     private Set<User> users;
     private List<Message> messages;
+    private boolean paired; // is it between only two people?
     
     public static final String CHAT_TAG = "Chat";
     public static final String CHATNAME_TAG = "chatName";
+    public static final String PAIRED_TAG = "paired";
     public static final String USERS_TAG = "Users";
     public static final String USERID_TAG = "userId";
     public static final String MESSAGES_TAG = "Messages";
@@ -29,6 +31,7 @@ public class Chat implements DOMable
     public Chat()
     {
         initDataStructures();
+        chatName = "";
     }
     
     public Chat(Element ele, Database db)
@@ -98,6 +101,7 @@ public class Chat implements DOMable
     {
         Element base = DOMmer.generateParentWithValue(doc, CHAT_TAG, "id", Integer.toString(id));
         DOMmer.addChildElementValue(doc, base, CHATNAME_TAG, chatName);
+        DOMmer.addChildElementValue(doc, base, PAIRED_TAG, Boolean.toString(paired));
         Element usersNode = doc.createElement(USERS_TAG);
         for(User user : users)
         {
@@ -118,6 +122,8 @@ public class Chat implements DOMable
         initDataStructures();
         
         id = Integer.parseInt(ele.getAttribute("id"));
+        chatName = DOMmer.getElementTagValue(ele, CHATNAME_TAG);
+        paired = Boolean.parseBoolean(DOMmer.getElementTagValue(ele, PAIRED_TAG));
         
         Element usersNode = (Element) DOMmer.getNodeByName(ele, USERS_TAG);
         String[] userIds = DOMmer.getElementTagValues(usersNode, USERID_TAG);
