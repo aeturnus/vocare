@@ -14,6 +14,7 @@ import io.bnguyen.vocare.data.InvalidAccountNameException;
 import io.bnguyen.vocare.data.InvalidEmailException;
 import io.bnguyen.vocare.data.Password;
 import io.bnguyen.vocare.data.User;
+import io.bnguyen.vocare.server.db.Database;
 
 public class ChatServer implements Runnable
 {
@@ -191,7 +192,7 @@ public class ChatServer implements Runnable
         {
             String accountName = read();
             String password = read();
-            Account acc = db.getAccount(accountName, true);
+            Account acc = db.getAccounts().findByAccountName(accountName);
             if(acc == null)
             {
                 write(VocareAPI.FAIL);

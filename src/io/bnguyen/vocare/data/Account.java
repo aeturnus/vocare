@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
 
 import io.bnguyen.vocare.io.DOMable;
 import io.bnguyen.vocare.io.DOMmer;
-import io.bnguyen.vocare.server.Database;
+import io.bnguyen.vocare.server.db.Database;
 
 public class Account implements DOMable
 {
@@ -95,7 +95,7 @@ public class Account implements DOMable
         String[] userIds = DOMmer.getElementTagValues(usersNode, USERID_TAG);
         for( String userId : userIds )
         {
-            users.add(db.getUser(Integer.parseInt(userId)));
+            users.add(db.getUsers().findById(Integer.parseInt(userId)));
         }
     }
 

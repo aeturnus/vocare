@@ -7,7 +7,7 @@ import org.w3c.dom.Element;
 
 import io.bnguyen.vocare.io.DOMable;
 import io.bnguyen.vocare.io.DOMmer;
-import io.bnguyen.vocare.server.Database;
+import io.bnguyen.vocare.server.db.Database;
 
 public class User implements DOMable
 {
@@ -78,7 +78,7 @@ public class User implements DOMable
         String[] userIds = DOMmer.getElementTagValues(usersNode, CONTACTID_TAG);
         for( String userId : userIds )
         {
-            contacts.add(db.getUser(Integer.parseInt(userId)));
+            contacts.add(db.getUsers().findById(Integer.parseInt(userId)));
         }
         
     }
@@ -92,7 +92,7 @@ public class User implements DOMable
     {
         this.id = id;
     }
-    public String getUsername()
+    public String getUserName()
     {
         return userName;
     }

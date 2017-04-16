@@ -7,7 +7,7 @@ import org.w3c.dom.Element;
 
 import io.bnguyen.vocare.io.DOMable;
 import io.bnguyen.vocare.io.DOMmer;
-import io.bnguyen.vocare.server.Database;
+import io.bnguyen.vocare.server.db.Database;
 
 public class Message implements Comparable<Message>, DOMable
 {
@@ -59,7 +59,7 @@ public class Message implements Comparable<Message>, DOMable
     public void fromElement(Element ele, Database db)
     {
         id = Integer.parseInt(ele.getAttribute("id"));
-        sender = db.getUser(Integer.parseInt(DOMmer.getElementTagValue(ele, SENDERID_TAG)));
+        sender = db.getUsers().findById(Integer.parseInt(DOMmer.getElementTagValue(ele, SENDERID_TAG)));
         message = DOMmer.getElementTagValue(ele, CONTENT_TAG);
         time = Long.parseLong(DOMmer.getElementTagValue(ele, TIME_TAG));
     }

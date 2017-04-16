@@ -3,7 +3,7 @@ package io.bnguyen.vocare.io;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import io.bnguyen.vocare.server.Database;
+import io.bnguyen.vocare.server.db.Database;
 
 public interface DOMable
 {
