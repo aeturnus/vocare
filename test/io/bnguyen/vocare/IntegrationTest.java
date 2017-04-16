@@ -89,6 +89,7 @@ public class IntegrationTest
             server.getDB().createAccount("johnnyboy", "john@email.com", "hunter2");
             Thread.sleep(50);
             client.connect();
+            client.login("johnnyboy", "hunter2");
             Thread.sleep(50);
             client.createUser("john", "John", "Johnson", "1234567890", "john@email.com");
             User newUser = server.getDB().getUsers().findByUserName("john");

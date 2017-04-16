@@ -145,7 +145,7 @@ public class ChatClient implements Runnable
             response = read();
             switch(response)
             {
-            case VocareAPI.CREATE_ACCOUNT_ACCOUNTNAME_TAKEN:
+            case VocareAPI.CREATE_USER_USERNAME_TAKEN:
                 badUserName= true;
                 break;
             }
