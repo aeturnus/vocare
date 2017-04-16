@@ -15,9 +15,10 @@ public class ChatClient implements Runnable
     private Socket socket;
     private PrintWriter toServer;
     private BufferedReader fromServer;
+    private boolean running;
     public ChatClient()
     {
-        
+        running = false;
     }
     
     private String read() throws IOException
@@ -37,9 +38,17 @@ public class ChatClient implements Runnable
         fromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
     
+    public void shutdown()
+    {
+        running = false;
+    }
+    
     public void run()
     {
-        
+        running = true;
+        while(running)
+        {
+        }
     }
     
     public void createAccount(String accountName, String email, String password)
