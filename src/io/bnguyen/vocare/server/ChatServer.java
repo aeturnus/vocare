@@ -32,14 +32,17 @@ public class ChatServer implements Runnable
         }
     }
     
+    // remove this in production
+    public Database getDB()
+    {
+        return db;
+    }
+    
     public void run()
     {
         listener = new ServerSocketListener();
         Thread listenerThread = new Thread(listener);
         listenerThread.start();
-        while(listener.isRunning())
-        {
-        }
     }
     
     public void shutdown()
