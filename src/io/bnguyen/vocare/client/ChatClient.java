@@ -16,9 +16,13 @@ public class ChatClient implements Runnable
     private PrintWriter toServer;
     private BufferedReader fromServer;
     private boolean running;
+    
+    private boolean loggedIn;
+    
     public ChatClient()
     {
         running = false;
+        loggedIn = false;
     }
     
     private String read() throws IOException
@@ -84,6 +88,7 @@ public class ChatClient implements Runnable
             throw new InvalidEmailException(email);
         if(badAccountName)
             throw new InvalidNameException(accountName);
+        loggedIn = true;
     }
     
     /**
@@ -95,6 +100,7 @@ public class ChatClient implements Runnable
     {
         write(VocareAPI.LOGOUT_ACCOUNT);
         waitForEnd();
+        loggedIn = false;
     }
     
     /**
@@ -116,6 +122,7 @@ public class ChatClient implements Runnable
             result = false;
         }
         waitForEnd();
+        loggedIn = result;
         return result;
     }
     
@@ -123,6 +130,8 @@ public class ChatClient implements Runnable
                            String phone, String email)
         throws IOException, InvalidNameException
     {
+        if(!loggedIn)
+            return;
         write(VocareAPI.CREATE_USER);
         write(userName);
         write(firstName);

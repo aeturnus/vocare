@@ -202,6 +202,15 @@ public class ChatServer implements Runnable
         
         private void handleRequest(String request) throws IOException
         {
+            if( !(request.equals(VocareAPI.CREATE_ACCOUNT) || request.equals(VocareAPI.LOGIN_ACCOUNT)) 
+                && (account == null) )
+            {
+                write(VocareAPI.NEED_AUTH);
+            }
+            else
+            {
+                write(VocareAPI.ACK);
+            }
             switch(request)
             {
             case VocareAPI.CREATE_ACCOUNT:
