@@ -8,8 +8,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import io.bnguyen.vocare.data.Account;
+import io.bnguyen.vocare.data.Chat;
 import io.bnguyen.vocare.data.InvalidAccountNameException;
 import io.bnguyen.vocare.data.InvalidEmailException;
+import io.bnguyen.vocare.data.Message;
+import io.bnguyen.vocare.data.User;
 import io.bnguyen.vocare.io.DOMable;
 import io.bnguyen.vocare.io.DOMmer;
 
@@ -71,7 +74,35 @@ public class Database implements DOMable
         
         Account acc = new Account(accountIdPool, accountName, email, password);
         accounts.add(acc);
+        ++accountIdPool;
         return acc;
+    }
+    
+    public Chat createChat(User user)
+    {
+        Chat chat = new Chat(chatIdPool);
+        chat.addUser(user);
+        chat.setPaired(false);
+        ++chatIdPool;
+        return chat;
+    }
+    
+    public Chat createChat(User user1, User user2)
+    {
+        Chat chat = new Chat(chatIdPool);
+        chat.addUser(user1);
+        chat.addUser(user2);
+        chat.setPaired(true);
+        ++chatIdPool;
+        return chat;
+    }
+    
+    public Message createMessage(Chat chat, User sender, String message)
+    {
+        Message msg = new Message(messageIdPool, sender, message);
+        chat.addMessage(msg);
+        ++messageIdPool;
+        return msg;
     }
  
     @Override

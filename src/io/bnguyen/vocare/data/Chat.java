@@ -28,10 +28,12 @@ public class Chat implements DOMable
     public static final String MESSAGES_TAG = "Messages";
     public static final String MSGID_TAG = "msgId";
     
-    public Chat()
+    public Chat(int id)
     {
         initDataStructures();
+        this.id = id;
         chatName = "";
+        paired = false;
     }
     
     public Chat(Element ele, Database db)
@@ -48,6 +50,16 @@ public class Chat implements DOMable
     public void removeUser(User user)
     {
         users.remove(user);
+    }
+    
+    public void addMessage(Message msg)
+    {
+        messages.add(msg);
+    }
+    
+    public void removeMesssage(Message msg)
+    {
+        messages.remove(msg);
     }
     
     
@@ -69,6 +81,16 @@ public class Chat implements DOMable
     public void setChatName(String chatName)
     {
         this.chatName = chatName;
+    }
+    
+    public boolean getPaired()
+    {
+        return paired;
+    }
+    
+    public void setPaired(boolean paired)
+    {
+        this.paired = paired;
     }
     
     public Set<User> getUsers()
